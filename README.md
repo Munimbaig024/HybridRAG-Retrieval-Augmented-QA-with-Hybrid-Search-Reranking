@@ -2,6 +2,10 @@
 
 A Question-Answering system that combines **Dense Retrieval** (semantic search) and **Sparse Retrieval** (keyword search) using **Reciprocal Rank Fusion (RRF)**, and enhances accuracy with a **Cross-Encoder Reranker**.
 
+## Live Demo
+Check out the deployed application on Streamlit Community Cloud: 
+**[Live Demo Link](https://hybridrag-retrieval-augmented-app-with-hybrid-search-reranking.streamlit.app/)**
+
 ## Features
 - **Hybrid Search**: Combines BM25 (keyword) and Vector Search (semantic) for optimal recall and precision.
 - **RRF Fusion**: Merges ranked lists from both retrieval methods to produce a unified ranked list.
@@ -52,10 +56,10 @@ Fetches Wikipedia data, chunks it, and builds the vector and sparse indexes.
 python ingest.py
 ```
 
-2. **Query the Data (Run repeatedly)**
-Loads the pre-built indexes and provides an interactive prompt for queries.
+2. **Run the Streamlit App (Run repeatedly)**
+Loads the pre-built indexes and launches the interactive web interface.
 ```bash
-python query.py
+streamlit run app.py
 ```
 
 ### Configuration
@@ -98,20 +102,20 @@ flowchart TD
     A[User Query] --> B[Input Processing]
     
     subgraph "Retrieval Phase"
-        B --> C[Dense Retrieval (Vector DB)]
-        B --> D[Sparse Retrieval (BM25)]
+        B --> C["Dense Retrieval (Vector DB)"]
+        B --> D["Sparse Retrieval (BM25)"]
         C --> E[Dense Results]
         D --> F[Sparse Results]
     end
     
-    E --> G[Reciprocal Rank Fusion (RRF)]
+    E --> G["Reciprocal Rank Fusion (RRF)"]
     F --> G
     G --> H[Fused Results]
     
     H --> I["Cross-Encoder Reranker<br/>(Context Grounding)"]
     I --> J[Top Retrieved Chunks]
     
-    J --> K[LLM Reasoning<br/>(Groq)]
+    J --> K["LLM Reasoning<br/>(Groq)"]
     K --> L[Final Answer]
     
     subgraph "Vector DB"
