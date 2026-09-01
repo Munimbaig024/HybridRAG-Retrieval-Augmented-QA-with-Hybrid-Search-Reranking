@@ -6,7 +6,11 @@ import numpy as np
 
 class DenseRetriever:
     def __init__(self, db_dir: str, collection_name: str, model_name: str):
-        self.client = chromadb.PersistentClient(path=db_dir)
+        if db_dir:
+            self.client = chromadb.PersistentClient(path=db_dir)
+        else:
+            self.client = chromadb.EphemeralClient()
+            
         self.embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=model_name)
         
         # Get or create the collection

@@ -8,11 +8,11 @@ from src import config
 logger = logging.getLogger(__name__)
 
 class HybridRAGPipeline:
-    def __init__(self):
+    def __init__(self, db_dir: str = config.CHROMA_DB_DIR):
         """Initializes all components of the HybridRAG pipeline."""
         logger.info("Initializing Dense Retriever...")
         self.dense_retriever = DenseRetriever(
-            db_dir=config.CHROMA_DB_DIR,
+            db_dir=db_dir,
             collection_name=config.COLLECTION_NAME,
             model_name=config.DENSE_MODEL_NAME
         )
@@ -98,4 +98,27 @@ class HybridRAGPipeline:
                 "sparse_results": sparse_results,
                 "fused_results": fused_results
             }
+        }
+        
+    def run_dense_only(self, query: str, final_k: int = 5) -> dict:
+        """
+        Runs only the dense retrieval and generation (for comparison purposes).
+        """
+        if not self.is_fitted:
+            raise RuntimeError("Pipeline must be fitted with documents before running queries.")
+            
+        logger.info(f"Processing dense-only query: '{query}'")
+        
+        # 1. Retrieval
+        logger.info("Running Dense Retrieval...")
+        dense_results = self.dense_retriever.retrieve(query, top_k=final_k)
+        
+        # 2. Generation
+        logger.info("Generating answer with Groq LLM...")
+        answer = self.generator.generate_answer(query, dense_results)
+        
+        return {
+            "query": query,
+            "answer": answer,
+            "context": dense_results,
         }
