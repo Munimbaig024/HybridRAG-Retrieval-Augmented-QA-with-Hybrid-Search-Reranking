@@ -1,0 +1,9 @@
+python-dotenv
+groq
+sentence-transformers
+rank-bm25
+chromadb
+pandas
+tqdm
+pytest
+wikipedia
